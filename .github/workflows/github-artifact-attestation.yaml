@@ -57,19 +57,12 @@ jobs:
       - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
         env:
           GH_TOKEN: ${{ github.token }}
-  verify-2-63-1:
+  verify-2-62-0:
     needs: attest
     runs-on: ubuntu-24.04
     steps:
-    - name: Install GH CLI
-      uses: arimal199-org/install-gh-cli-action@v0.2.0
-      with:
-        gh-cli-version: 2.63.1
-  verify-2-63-2:
-    needs: attest
-    runs-on: ubuntu-24.04
-    steps:
-    - name: Install GH CLI
-      uses: arimal199-org/install-gh-cli-action@v0.2.0
-      with:
-        gh-cli-version: 2.63.2
+    - run: wget https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_linux_amd64.tar.gz
+    - run: tar -xvzf gh_X.Y.Z_linux_amd64.tar.gz
+    - run: sudo mv gh_*/bin/gh /usr/local/bin/
+    - run: gh --version
+
