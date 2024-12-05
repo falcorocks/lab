@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ env.GH_TOKEN }}
+          password: ${{ github.token }}
       - name: copy
         run: crane copy alpine ${{ env.IMAGE }}:1h
       - id: crane-digest
@@ -43,7 +43,7 @@ jobs:
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
-        password: ${{ env.GH_TOKEN }}
+        password: ${{ github.token }}
     - name: attest
       uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
       with:
