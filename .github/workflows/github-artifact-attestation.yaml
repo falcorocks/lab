@@ -10,7 +10,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE: falcorocks/lab/alpine
   TAG: ${{ github.sha }}
-  GH_TOKEN: ${{ github.token }}
 jobs:
   build:
     permissions:
@@ -63,3 +62,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
       - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+        env:
+          GH_TOKEN: ${{ github.token }}
