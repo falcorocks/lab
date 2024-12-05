@@ -1,0 +1,43 @@
+name: Github Artifact Attestation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+env:
+  REGISTRY: ttl.sh
+  IMAGE: ${{ github.sha }}
+  IMAGE_TAG: 1h
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  build:
+    outputs:
+      digest: ${{ steps.crane-digest.outputs.digest }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: imjasonh/setup-crane
+      - name: copy
+        run: crane copy alpine ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+      - id: crane-digest
+        run: echo "digest=$(crane digest ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }})" >> $GITHUB_OUTPUT
+  attest:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      attestations: write
+    steps:
+    - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
+    - name: attest
+      uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
+      with:
+        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+        subject-digest: ${{ needs.build.outputs.digest }}
+        push-to-registry: true
+  verify:
+    needs: attest
+    runs-on: ubuntu-24.04
+    steps:
+      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
