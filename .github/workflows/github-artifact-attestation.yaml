@@ -7,36 +7,53 @@ on:
       - 'main'
 
 env:
-  IMAGE: ttl.sh/falcorocks-${{ github.sha }}
+  REGISTRY: ghcr.io
+  IMAGE: falcorocks/lab/alpine
+  TAG: ${{ github.ref }}
   GH_TOKEN: ${{ github.token }}
 jobs:
   build:
+    permissions:
+      packages: write
     outputs:
       digest: ${{ steps.crane-digest.outputs.digest }}
     runs-on: ubuntu-24.04
     steps:
       - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
+      - name: docker login to gh registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ env.GH_TOKEN }}
       - name: copy
         run: crane copy alpine ${{ env.IMAGE }}:1h
       - id: crane-digest
-        run: echo "digest=$(crane digest ${{ env.IMAGE }}:1h)" >> $GITHUB_OUTPUT
+        run: echo "digest=$(crane digest ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }})" >> $GITHUB_OUTPUT
   attest:
     needs: build
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
       attestations: write
+      packages: write
     steps:
-    - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
-    - run: docker login ttl.sh -u notanuser -p notapassword
+    - name: docker login to gh registry
+      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ env.GH_TOKEN }}
     - name: attest
       uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
       with:
-        subject-name: ${{ env.IMAGE }}
+        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE }}
         subject-digest: ${{ needs.build.outputs.digest }}
         push-to-registry: true
   verify:
     needs: attest
     runs-on: ubuntu-24.04
+    permissions:
+      packages: read
     steps:
-      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.IMAGE }}:1h
+      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
