@@ -7,7 +7,7 @@ on:
       - 'main'
 
 env:
-  IMAGE: ttl.sh/${{ github.sha }}
+  IMAGE: ttl.sh/falcorocks-${{ github.sha }}
   GH_TOKEN: ${{ github.token }}
 jobs:
   build:
@@ -28,6 +28,7 @@ jobs:
       attestations: write
     steps:
     - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
+    - run: docker login ttl.sh -u notanuser -p notapassword
     - name: attest
       uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
       with:
