@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE: falcorocks/lab/alpine
+  IMAGE: falcorocks/lab
   TAG: ${{ github.sha }}
 jobs:
   build:
