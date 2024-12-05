@@ -17,7 +17,7 @@ jobs:
       digest: ${{ steps.crane-digest.outputs.digest }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: imjasonh/setup-crane
+      - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
       - name: copy
         run: crane copy alpine ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
       - id: crane-digest
