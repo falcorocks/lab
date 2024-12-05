@@ -56,4 +56,10 @@ jobs:
     permissions:
       packages: read
     steps:
+      - name: docker login to gh registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
