@@ -62,6 +62,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Install GH CLI
-      uses: arimal199-org/install-gh-cli-action
+      uses: arimal199-org/install-gh-cli-action@v0.2.0
       with:
         gh-cli-version: 2.63.1
