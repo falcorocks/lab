@@ -7,9 +7,7 @@ on:
       - 'main'
 
 env:
-  REGISTRY: ttl.sh
-  IMAGE: ${{ github.sha }}
-  IMAGE_TAG: 1h
+  IMAGE: ttl.sh/${{ github.sha }}
   GH_TOKEN: ${{ github.token }}
 jobs:
   build:
@@ -19,9 +17,9 @@ jobs:
     steps:
       - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
       - name: copy
-        run: crane copy alpine ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+        run: crane copy alpine ${{ env.IMAGE }}:1h
       - id: crane-digest
-        run: echo "digest=$(crane digest ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }})" >> $GITHUB_OUTPUT
+        run: echo "digest=$(crane digest ${{ env.IMAGE }}:1h)" >> $GITHUB_OUTPUT
   attest:
     needs: build
     runs-on: ubuntu-24.04
@@ -33,11 +31,11 @@ jobs:
     - name: attest
       uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
       with:
-        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+        subject-name: ${{ env.IMAGE }}
         subject-digest: ${{ needs.build.outputs.digest }}
         push-to-registry: true
   verify:
     needs: attest
     runs-on: ubuntu-24.04
     steps:
-      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.IMAGE }}:1h
