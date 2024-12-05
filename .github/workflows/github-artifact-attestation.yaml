@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - run: wget https://github.com/cli/cli/releases/download/v2.62.0/gh_2.62.0_linux_amd64.tar.gz
-    - run: tar -xvzf gh_X.Y.Z_linux_amd64.tar.gz
+    - run: tar -xvzf gh_2.62.0_linux_amd64.tar.gz
     - run: sudo mv gh_*/bin/gh /usr/local/bin/
     - run: gh --version
 
