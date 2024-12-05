@@ -1,0 +1,65 @@
+name: Github Artifact Attestation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE: falcorocks/lab
+  TAG: ${{ github.sha }}
+jobs:
+  build:
+    permissions:
+      packages: write
+    outputs:
+      digest: ${{ steps.crane-digest.outputs.digest }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: imjasonh/setup-crane@31b88efe9de28ae0ffa220711af4b60be9435f6e
+      - name: docker login to gh registry
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: copy
+        run: crane copy alpine ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+      - id: crane-digest
+        run: echo "digest=$(crane digest ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }})" >> $GITHUB_OUTPUT
+  attest:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      attestations: write
+      packages: write
+    steps:
+    - name: docker login to gh registry
+      uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    - name: attest
+      uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940
+      with:
+        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+        subject-digest: ${{ needs.build.outputs.digest }}
+        push-to-registry: true
+  verify:
+    needs: attest
+    strategy:
+      matrix:
+        version: [2.62.0, 2.63.0, 2.63.1]
+    runs-on: ubuntu-24.04
+    steps:
+    - run: wget https://github.com/cli/cli/releases/download/v${{ matrix.version }}/gh_${{ matrix.version }}_linux_amd64.tar.gz
+    - run: tar -xvzf gh_${{ matrix.version }}_linux_amd64.tar.gz
+    - run: sudo mv gh_*/bin/gh /usr/local/bin/
+    - run: gh --version
+    - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+      env:
+        GH_TOKEN: ${{ github.token }}
