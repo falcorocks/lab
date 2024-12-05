@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
       - name: copy
-        run: crane copy alpine ${{ env.IMAGE }}:1h
+        run: crane copy alpine ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
       - id: crane-digest
         run: echo "digest=$(crane digest ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }})" >> $GITHUB_OUTPUT
   attest:
