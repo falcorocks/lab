@@ -56,4 +56,4 @@ jobs:
     permissions:
       packages: read
     steps:
-      - run: gh attestation verify --bundle-from-oci --format=json oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+      - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
