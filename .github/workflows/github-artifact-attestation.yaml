@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE: falcorocks/lab/alpine
-  TAG: ${{ github.ref }}
+  TAG: ${{ github.ref_name }}
   GH_TOKEN: ${{ github.token }}
 jobs:
   build:
