@@ -61,3 +61,5 @@ jobs:
     - run: sudo mv gh_*/bin/gh /usr/local/bin/
     - run: gh --version
     - run: gh attestation verify --bundle-from-oci --format=json --owner falcorocks oci://${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ env.TAG }}
+      env:
+        GH_TOKEN: ${{ github.token }}
