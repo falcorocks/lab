@@ -7,7 +7,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          # Checkout the full repository history instead of just the PR head commit
+          # This allows access to all commits in the repository for verification
+          fetch-depth: 0
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
         run: |
