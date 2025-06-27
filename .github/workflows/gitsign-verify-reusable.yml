@@ -1,0 +1,45 @@
+name: Reusable Gitsign Verify
+
+on:
+  workflow_call:
+    inputs:
+      certificate-identity-regexp:
+        description: 'Regular expression to match certificate identity'
+        required: false
+        type: string
+        default: '^.*@oplabs.co$'
+      certificate-oidc-issuer:
+        description: 'OIDC issuer for certificate verification'
+        required: false
+        type: string
+        default: 'https://accounts.google.com'
+
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    name: verify all commits
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Checkout the full repository history instead of just the PR head commit
+          # This allows access to all commits in the repository for verification
+          fetch-depth: 0
+      - uses: chainguard-dev/actions/setup-gitsign@main
+      - name: gitsign verify all commits
+        shell: bash
+        run: |
+          # Get the base commit (target branch) and head commit (PR branch)
+          BASE_COMMIT="${{ github.event.pull_request.base.sha }}"
+          HEAD_COMMIT="${{ github.event.pull_request.head.sha }}"
+          
+          # Get all commits between base and head (new commits in the PR)
+          COMMITS=$(git log --oneline "$BASE_COMMIT..$HEAD_COMMIT" --format="%H")
+          echo "$COMMITS"
+          
+          # Verify each commit
+          for commit in $COMMITS; do
+            echo "Verifying commit: $commit"
+            gitsign verify --certificate-identity-regexp="${{ inputs.certificate-identity-regexp }}" --certificate-oidc-issuer="${{ inputs.certificate-oidc-issuer }}" $commit
+            echo "--------------------------------"
+          done 
