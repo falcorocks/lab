@@ -16,7 +16,7 @@ jobs:
           HEAD_COMMIT="${{ github.event.pull_request.head.sha }}"
           
           # Get all commits between base and head (new commits in the PR)
-          COMMITS=$(git log --oneline "$MERGE_BASE..$HEAD_COMMIT" --format="%H")
+          COMMITS=$(git log --oneline "$BASE_COMMIT..$HEAD_COMMIT" --format="%H")
           echo "$COMMITS"
           
           # # Verify each commit
