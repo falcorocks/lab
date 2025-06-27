@@ -17,6 +17,7 @@ jobs:
           
           # Get all commits between base and head (new commits in the PR)
           COMMITS=$(git log --oneline $BASE_COMMIT..$HEAD_COMMIT --format="%H")
+          echo $COMMITS
           
           # Verify each commit
           for commit in $COMMITS; do
