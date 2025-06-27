@@ -21,8 +21,8 @@ jobs:
           COMMITS=$(git log --oneline "$BASE_COMMIT..$HEAD_COMMIT" --format="%H")
           echo "$COMMITS"
           
-          # # Verify each commit
-          # for commit in $COMMITS; do
-          #   echo "Verifying commit: $commit"
-          #   gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" $commit
-          # done
+          # Verify each commit
+          for commit in $COMMITS; do
+            echo "Verifying commit: $commit"
+            gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" $commit
+          done
