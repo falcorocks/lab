@@ -1,0 +1,18 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - uses: chainguard-dev/actions/setup-gitsign@16e2fd6603a1c6a1fbc880fdbb922b2e8e2be3e7
+      - shell: bash
+        run: |
+          gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com"
