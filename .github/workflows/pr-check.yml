@@ -8,12 +8,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: alpine:latest
+      image: golang:alpine
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - run: apk add gitsign
+      - run: go install github.com/sigstore/gitsign@latest
       - run: gitsign version
       - run: gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" HEAD
