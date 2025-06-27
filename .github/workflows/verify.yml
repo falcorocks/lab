@@ -25,4 +25,5 @@ jobs:
           for commit in $COMMITS; do
             echo "Verifying commit: $commit"
             gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" $commit
+            echo "--------------------------------"
           done
