@@ -1,0 +1,9 @@
+name: Enforce gitsign
+on: [pull_request]
+jobs:
+  verify:
+    name: verify all commits
+    uses: ./.github/workflows/gitsign-verify-reusable.yml
+    with:
+      certificate-identity-regexp: '^.*@oplabs.co$'
+      certificate-oidc-issuer: 'https://accounts.google.com'
