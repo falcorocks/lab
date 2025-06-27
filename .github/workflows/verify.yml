@@ -11,4 +11,4 @@ jobs:
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
         run: |
-          gitsign verify --certificate-identity-regexp="^.*@chainguard.dev$" --certificate-oidc-issuer="https://accounts.google.com"
+          gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com"
