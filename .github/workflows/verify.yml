@@ -1,9 +1,9 @@
-name: Verify Commit
+name: Enforce gitsign
 on: [pull_request]
 jobs:
   verify:
     runs-on: ubuntu-latest
-    name: Verify commit
+    name: verify all commits
     steps:
       - uses: actions/checkout@v4
         with:
@@ -11,4 +11,15 @@ jobs:
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
         run: |
-          gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" HEAD~0
+          # Get the base commit (target branch) and head commit (PR branch)
+          BASE_COMMIT="${{ github.event.pull_request.base.sha }}"
+          HEAD_COMMIT="${{ github.event.pull_request.head.sha }}"
+          
+          # Get all commits between base and head (new commits in the PR)
+          COMMITS=$(git log --oneline $BASE_COMMIT..$HEAD_COMMIT --format="%H")
+          
+          # Verify each commit
+          for commit in $COMMITS; do
+            echo "Verifying commit: $commit"
+            gitsign verify --certificate-identity-regexp="^.*@oplabs.co$" --certificate-oidc-issuer="https://accounts.google.com" $commit
+          done
