@@ -6,8 +6,8 @@ jobs:
     name: Verify commit
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+        # with:
+        #   ref: ${{ github.event.pull_request.head.sha }}
       - uses: chainguard-dev/actions/setup-gitsign@main
       - shell: bash
         run: |
