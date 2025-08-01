@@ -1,2 +1,2 @@
 FROM alpine
-touch x
+RUN touch x
