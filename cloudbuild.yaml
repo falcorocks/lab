@@ -1,8 +1,8 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build','-t', 'europe-docker.pkg.dev/$PROJECT_ID/mutables:$SHORT_SHA','.']
+    args: ['build','-t', 'europe-docker.pkg.dev/$PROJECT_ID/mutables/lab:$SHORT_SHA','.']
 
-images: ['europe-docker.pkg.dev/$PROJECT_ID/mutables:$SHORT_SHA']
+images: ['europe-docker.pkg.dev/$PROJECT_ID/mutables/lab:$SHORT_SHA']
 
 options:
   logging: CLOUD_LOGGING_ONLY
