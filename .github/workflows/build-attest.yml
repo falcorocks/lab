@@ -2,7 +2,7 @@ name: build-attested-image
 
 on:
   push:
-    branches: [main]
+    branches: [main, test-policy]
 
 jobs:
   build:
