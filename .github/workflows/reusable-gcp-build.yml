@@ -92,7 +92,8 @@ jobs:
           platforms: ${{ inputs.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
           push: true
-          no-cache: true
+          cache-from: type=gha
+          cache-to: ${{ github.ref_protected && 'type=gha,mode=max' || '' }}
       
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
