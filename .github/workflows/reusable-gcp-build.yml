@@ -96,6 +96,7 @@ jobs:
       
       - name: Push image
         uses: docker/build-push-action@v6
+        id: push
         with:
           context: "{{defaultContext}}:${{ inputs.context }}"
           file: ${{ inputs.dockerfile }}
@@ -107,5 +108,5 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
           subject-name: ${{ secrets.registry }}/${{ inputs.image_name }}
-          subject-digest: ${{ steps.build.outputs.digest }}
+          subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
