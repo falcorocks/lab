@@ -107,7 +107,7 @@ jobs:
         with:
           registry: ${{ secrets.registry }}
           username: oauth2accesstoken
-          password: ${{ steps.auth-attest.outputs.access_token }}
+          password: ${{ steps.auth-attest.outputs.auth_token }}
       
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
