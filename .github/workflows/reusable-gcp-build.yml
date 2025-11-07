@@ -85,6 +85,7 @@ jobs:
 
       - run: cat ~/.docker/config.json
       
+      
       - name: Build and push image
         id: build
         uses: docker/build-push-action@v6
