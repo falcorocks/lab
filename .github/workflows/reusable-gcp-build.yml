@@ -80,6 +80,13 @@ jobs:
           workload_identity_provider: ${{ secrets.workload_identity_provider }}
           create_credentials_file: true
 
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.registry }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.auth_token }}
+
       - name: Configure Docker for GCP Artifact Registry
         run: gcloud auth configure-docker us-docker.pkg.dev --quiet
       
