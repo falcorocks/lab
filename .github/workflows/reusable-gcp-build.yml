@@ -95,9 +95,9 @@ jobs:
           cache-from: type=gha
           cache-to: ${{ github.ref_protected && 'type=gha,mode=max' || '' }}
 
-      # - name: Revoke GCP Authentication
-      #   run: gcloud auth revoke
-      
+      - run: docker logout us-docker.pkg.dev
+      - run: gcloud auth revoke --all
+
       - name: Re-authenticate to Google Cloud
         id: auth2
         uses: google-github-actions/auth@v3
