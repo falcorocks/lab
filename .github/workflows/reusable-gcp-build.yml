@@ -78,7 +78,7 @@ jobs:
         with:
           project_id: ${{ secrets.project_id }}
           workload_identity_provider: ${{ secrets.workload_identity_provider }}
-          create_credentials_file: true
+          # create_credentials_file: true
 
       - name: Login to Artifact Registry
         uses: docker/login-action@v3
