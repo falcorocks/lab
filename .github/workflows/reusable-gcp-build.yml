@@ -51,6 +51,10 @@ jobs:
         uses: step-security/harden-runner@v2
         with:
           egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
