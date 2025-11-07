@@ -96,7 +96,6 @@ jobs:
           cache-to: ${{ github.ref_protected && 'type=gha,mode=max' || '' }}
 
       - run: docker logout us-docker.pkg.dev
-      - run: gcloud auth revoke --all
 
       - name: Re-authenticate to Google Cloud
         id: auth2
