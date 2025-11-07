@@ -96,6 +96,13 @@ jobs:
           cache-from: type=gha
           cache-to: ${{ github.ref_protected && 'type=gha,mode=max' || '' }}
       
+      - name: Login to Google Artifact Registry for attestation
+        uses: docker/login-action@v3
+        with:
+          registry: us-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v3
         with:
