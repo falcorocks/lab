@@ -81,6 +81,9 @@ jobs:
           access_token_lifetime: 3600s
           create_credentials_file: true
       
+      - name: Configure Docker for GCP Artifact Registry
+        run: gcloud auth configure-docker us-docker.pkg.dev --quiet
+      
       - name: Build and push image
         id: build
         uses: docker/build-push-action@v6
