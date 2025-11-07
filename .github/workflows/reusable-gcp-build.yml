@@ -90,8 +90,8 @@ jobs:
           platforms: ${{ inputs.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
           push: true
-          cache-from: type=gha
-          cache-to: ${{ github.ref_protected && 'type=gha,mode=max' || '' }}
+          cache-from: type=gha,scope=${{ inputs.image_name }}
+          cache-to: ${{ github.ref_protected && 'type=gha,mode=max,scope=${{ inputs.image_name }}' || '' }}
 
       # reauthentication is necessary because
       # 1. the actions/attest-build-provenance does not use the gcloud cred helper
